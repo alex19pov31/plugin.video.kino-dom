@@ -37,7 +37,8 @@ def Search():
 
 def isLinkUseful(needle):
     haystack = ['/?do=archive', 'http://www.linecinema.org/', 'http://www.animult.tv/', 
-    '/faq.html', '/agreement.html', '/copyright.html', '/reklama.html', '/contacts.html', '/news-kino-serials/']
+    '/faq.html', '/agreement.html', '/copyright.html', '/reklama.html', '/contacts.html', '/news-kino-serials/',
+    '/online-tv/', '/people-tv/', '/sport-tv/', '/fun-tv/']
     return needle not in haystack
 
 def Categories():
@@ -85,7 +86,12 @@ def Videos(url, title):
     for series in data['playlist']:
         if 'playlist' in series and len(series['playlist']) > 0:
             for sr in series['playlist']:
-                addLink(series['comment'] + ': '+ sr['comment'], sr['file'])
+                file = re.compile('(http\:\/\/[^\[]+)\[([\d,]+)\](\.\w{2,4})').findall(sr['file'])
+                file_q = re.compile('(\d+)').findall(file[0][1])
+
+                for qat in file_q:
+                    file_normalize = file[0][0] + qat + file[0][2]
+                    addLink(series['comment'] + ': '+ sr['comment'] + ' - q' + qat, file_normalize)
         else:
             addLink(series['comment'], series['file'])
 
